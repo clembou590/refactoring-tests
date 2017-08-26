@@ -42,14 +42,10 @@ public class PlaylistBusinessBean {
                 return Collections.EMPTY_LIST;
             }
 
-            Set<PlayListTrack> originalSet = playList.getPlayListTracks();
-            List<PlayListTrack> original;
-            if (originalSet == null || originalSet.size() == 0)
-                original = new ArrayList<PlayListTrack>();
-            else
-                original = new ArrayList<PlayListTrack>(originalSet);
+            List<PlayListTrack> original = playList.getPlayListTracks();
+ 
 
-            Collections.sort(original);
+           // Collections.sort(original);
 
             List<PlayListTrack> added = new ArrayList<PlayListTrack>(tracksToAdd.size());
 
@@ -67,7 +63,7 @@ public class PlaylistBusinessBean {
 
             int i = 0;
             for (PlayListTrack track : original) {
-                track.setIndex(i++);
+              //  track.setIndex(i++);
             }
 
             playList.getPlayListTracks().clear();

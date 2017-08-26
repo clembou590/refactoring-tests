@@ -2,3 +2,28 @@
 if you do not know this library: it enables you to create the getter and the setter with just one annotation in the java file.
 --> it makes the file much more "readable" 
 (for exemple in original class "PlayList.java" someone could be tempted to modify the setPlayListTracks to also change the "number of tracks" and that code would be all "hidden" in among all other getters and setters).
+
+
+
+2) refactoring the data classes:
+--> I am going to write most of the relevant questions I asked myself to justify the changes that I would do if I were part of the team:
+
+	A) in Playlist.java we have "id" and "uuid"... that's not necessary either use id and let the database layer autogenerate the id or use uuid and then generate it.
+	--> remove id attribute
+
+	B) why Playlist.java contains a set of "PlaylistTrack" and not a set of "Track"?
+	--> the only reason I see to keep the class "PlaylistTrack" and not completely delete it is the "PlaylistTrack.dateAdded" field:
+		when a user add a track to his playlist, if it is a requirement that we must save the information that he added this track at this time, then we cannot save it in "Track" (and obviously not in Playlist).
+		So we need an additionnal class: PlaylistTrack.
+		
+	C) "PlaylistTrack.index" / Playlist contains a set of PlaylistTrack and not a List	 ?
+	--> a requirement for playlist fonctionnality: "it should be possible to create a playlist that contains several times the same track."
+		index seems to be used to be able to sort the list of tracks: using an List instead of a set enables the business logic to not have to deal with this problematic.
+	    So I get rid of "PlaylistTrack.index" and I remove "implement Comparable" from PlayListTrack.
+	    
+	D) ¨PlayListTrack" contains attribute: Track / TrackId / Playlist But not PlaylistId?
+	--> add playListUUID as an attribute in PlayListTrack.java (we need this information because two playlistTrack are not equals if they do not belong to the same Playlist).
+	note: we could have used playlist.getUUID() (and also track.getId()) but in this case it would mean that the data: playlist and track objects would have to be fetched from DB.
+	
+	 
+	

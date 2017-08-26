@@ -30,7 +30,6 @@ public class PlaylistDaoBean {
 
         trackPlayList.setDeleted(false);
         trackPlayList.setDuration((float) (60 * 60 * 2));
-        trackPlayList.setId(49834);
         trackPlayList.setLastUpdated(new Date());
         trackPlayList.setNrOfTracks(376);
         trackPlayList.setPlayListName("Collection of great songs");
@@ -40,14 +39,13 @@ public class PlaylistDaoBean {
         return trackPlayList;
     }
 
-    private static Set<PlayListTrack> getPlaylistTracks() {
+    private static List<PlayListTrack> getPlaylistTracks() {
 
-        Set<PlayListTrack> playListTracks = new HashSet<PlayListTrack>();
+        List<PlayListTrack> playListTracks = new ArrayList<>();
         for (int i = 0; i < 376; i++) {
             PlayListTrack playListTrack = new PlayListTrack();
             playListTrack.setDateAdded(new Date());
             playListTrack.setId(i + 1);
-            playListTrack.setIndex(i);
             playListTrack.setTrack(getTrack());
 
         }

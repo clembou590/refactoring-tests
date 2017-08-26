@@ -5,16 +5,19 @@ import java.util.Date;
 
 import lombok.Data;
 
-public @Data class PlayListTrack implements Serializable, Comparable<PlayListTrack> {
+public @Data class PlayListTrack implements Serializable {
 
     private static final long serialVersionUID = 5464240796158432162L;
 
     private Integer id;
+    
+    private String playlistUUID;
     private PlayList playlist;
-    private int index;
-    private Date dateAdded;
-    private int trackId;
+ 
 
+    private Date dateAdded;
+    
+    private int trackId;
     private Track track;
 
     public PlayListTrack() {
@@ -23,9 +26,7 @@ public @Data class PlayListTrack implements Serializable, Comparable<PlayListTra
 
 
 
-    public int compareTo(PlayListTrack o) {
-        return this.getIndex() - o.getIndex();
-    }
+
 
 
     @Override
@@ -33,9 +34,9 @@ public @Data class PlayListTrack implements Serializable, Comparable<PlayListTra
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PlayListTrack that = (PlayListTrack) o;
-
-        if (index != that.index) return false;
+        PlayListTrack that = (PlayListTrack) o; 
+  			
+  			if(playlistUUID !=null ? !playlistUUID.equals(that.playlistUUID): that.playlistUUID!=null) return false;
         if (trackId != that.trackId) return false;
         if (dateAdded != null ? !dateAdded.equals(that.dateAdded) : that.dateAdded != null) return false;
         return !(id != null ? !id.equals(that.id) : that.id != null);
@@ -45,9 +46,9 @@ public @Data class PlayListTrack implements Serializable, Comparable<PlayListTra
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + index;
         result = 31 * result + (dateAdded != null ? dateAdded.hashCode() : 0);
         result = 31 * result + trackId;
+        result = 31 * result + ((playlistUUID == null) ? 0 : playlistUUID.hashCode());
         return result;
     }
 
