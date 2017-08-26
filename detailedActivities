@@ -18,8 +18,9 @@ if you do not know this library: it enables you to create the getter and the set
 		
 	C) "PlaylistTrack.index" / Playlist contains a set of PlaylistTrack and not a List	 ?
 	--> a requirement for playlist fonctionnality: "it should be possible to create a playlist that contains several times the same track."
-		index seems to be used to be able to sort the list of tracks: using an List instead of a set enables the business logic to not have to deal with this problematic.
+		index seems to be used to be able to sort the list of tracks: using an LIST instead of a SET enables the business logic to not have to deal with this problematic.
 	    So I get rid of "PlaylistTrack.index" and I remove "implement Comparable" from PlayListTrack.
+	    I also remove the attribute PlayList.nrOfTracks but I create a getNrOfTracks that returns the size of the list.
 	    
 	D) ¨PlayListTrack" contains attribute: Track / TrackId / Playlist But not PlaylistId?
 	--> add playListUUID as an attribute in PlayListTrack.java (we need this information because two playlistTrack are not equals if they do not belong to the same Playlist).

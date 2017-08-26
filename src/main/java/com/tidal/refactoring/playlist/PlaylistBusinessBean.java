@@ -68,7 +68,6 @@ public class PlaylistBusinessBean {
 
             playList.getPlayListTracks().clear();
             playList.getPlayListTracks().addAll(original);
-            playList.setNrOfTracks(original.size());
 
             return added;
 

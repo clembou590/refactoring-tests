@@ -21,7 +21,7 @@ public @Data class PlayList {
     private Date registeredDate;
     private Date lastUpdated;
     private String uuid;
-    private int nrOfTracks;
+  
     private boolean deleted;
     private Float duration;
 
@@ -32,5 +32,9 @@ public @Data class PlayList {
         this.lastUpdated = d;
     }
 
+    
+    public int getNrOfTracks(){
+    	return this.playListTracks.size();
+    }
 
 }

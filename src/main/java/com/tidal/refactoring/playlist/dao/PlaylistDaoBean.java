@@ -31,7 +31,7 @@ public class PlaylistDaoBean {
         trackPlayList.setDeleted(false);
         trackPlayList.setDuration((float) (60 * 60 * 2));
         trackPlayList.setLastUpdated(new Date());
-        trackPlayList.setNrOfTracks(376);
+        
         trackPlayList.setPlayListName("Collection of great songs");
         trackPlayList.setPlayListTracks(getPlaylistTracks());
         trackPlayList.setUuid(uuid);
