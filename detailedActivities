@@ -1,0 +1,4 @@
+1) remove all getters and setters and use lombok!
+if you do not know this library: it enables you to create the getter and the setter with just one annotation in the java file.
+--> it makes the file much more "readable" 
+(for exemple in original class "PlayList.java" someone could be tempted to modify the setPlayListTracks to also change the "number of tracks" and that code would be all "hidden" in among all other getters and setters).

@@ -3,7 +3,9 @@ package com.tidal.refactoring.playlist.data;
 import java.io.Serializable;
 import java.util.Date;
 
-public class PlayListTrack implements Serializable, Comparable<PlayListTrack> {
+import lombok.Data;
+
+public @Data class PlayListTrack implements Serializable, Comparable<PlayListTrack> {
 
     private static final long serialVersionUID = 5464240796158432162L;
 
@@ -19,53 +21,7 @@ public class PlayListTrack implements Serializable, Comparable<PlayListTrack> {
         dateAdded = new Date();
     }
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public int getTrackId() {
-        return trackId;
-    }
-
-    public void setTrackId(int trackId) {
-        this.trackId = trackId;
-    }
-
-    public PlayList getTrackPlayList() {
-        return playlist;
-    }
-
-    public void setTrackPlaylist(PlayList playlist) {
-        this.playlist = playlist;
-    }
-
-    public Track getTrack() {
-        return track;
-    }
-
-    public void setTrack(Track track) {
-        this.track = track;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public Date getDateAdded() {
-        return dateAdded;
-    }
-
-    public void setDateAdded(Date dateAdded) {
-        this.dateAdded = dateAdded;
-    }
 
     public int compareTo(PlayListTrack o) {
         return this.getIndex() - o.getIndex();

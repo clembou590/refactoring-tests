@@ -1,7 +1,8 @@
 package com.tidal.refactoring.playlist.data;
 
+import lombok.Data;
 
-public class Track {
+public @Data class Track {
 
     private String title;
     private float duration;
@@ -12,35 +13,5 @@ public class Track {
     public Track() {
     }
 
-    public String getTitle() {
-        return this.title;
-    }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public float getDuration() {
-        return this.duration;
-    }
-
-    public void setDuration(float duration) {
-        this.duration = duration;
-    }
-
-    public int getArtistId() {
-        return artistId;
-    }
-
-    public void setArtistId(int artistId) {
-        this.artistId = artistId;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
 }

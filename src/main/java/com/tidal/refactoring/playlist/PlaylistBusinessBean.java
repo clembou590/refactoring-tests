@@ -56,7 +56,7 @@ public class PlaylistBusinessBean {
             for (Track track : tracksToAdd) {
                 PlayListTrack playlistTrack = new PlayListTrack();
                 playlistTrack.setTrack(track);
-                playlistTrack.setTrackPlaylist(playList);
+                playlistTrack.setPlaylist(playList);
                 playlistTrack.setDateAdded(new Date());
                 playlistTrack.setTrack(track);
                 playList.setDuration(addTrackDurationToPlaylist(playList, track));
