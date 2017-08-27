@@ -7,7 +7,7 @@ this is a standard maven project so to execute it:
 
 ### My detailed solution step by step
 
-1) remove all getters and setters and use lombok!
+1) remove all getters and setters from data classes and use lombok!
 if you do not know this library: it enables you to create the getter and the setter with just one annotation in the java file.
 --> it makes the file much more "readable" 
 (for exemple in original class "PlayList.java" someone could be tempted to modify the setPlayListTracks method to also change the "number of tracks" and that code would be all "hidden" in among all other getters and setters).
@@ -40,10 +40,9 @@ if you do not know this library: it enables you to create the getter and the set
 because of previous steps, the Business class becomes very small. (small means easier to maintain, easier to understand too...).
 only two public methods (one for add, one for remove tracks). All other methods are private AND static because they do not use class members.
 when adding or removing tracks from a playlist, we must also update the "playlist duration" and I see to ways to do it:
- option A): you just recompute all the playlist duration using all the tracks the playlist contains.
- option B): you just add/remove the time of the sum of the duration of the elements that were added/removed.
- 
- I chose option B) because this way we do not have to "fetch" all the "track" objects to update the playlist (it's possible when calling DAO that track object is lazy loaded into playlistTrack).
+  -option A): you just recompute all the playlist duration using all the tracks the playlist contains.
+  -option B): you just add/remove the time of the sum of the duration of the elements that were added/removed.
+  ---> I chose option B) because this way we do not have to "fetch" all the "track" objects to update the playlist (it's possible when calling DAO that track object is lazy loaded into playlistTrack).
 
 
 
