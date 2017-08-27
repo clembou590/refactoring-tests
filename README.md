@@ -40,28 +40,31 @@ if you do not know this library: it enables you to create the getter and the set
 because of previous steps, the Business class becomes very small. (small means easier to maintain, easier to understand too...).
 only two public methods (one for add, one for remove tracks). All other methods are private AND static because they do not use class members.
 when adding or removing tracks from a playlist, we must also update the "playlist duration" and I see to ways to do it:
-  -option A): you just recompute all the playlist duration using all the tracks the playlist contains.
-  -option B): you just add/remove the time of the sum of the duration of the elements that were added/removed.
-  ---> I chose option B) because this way we do not have to "fetch" all the "track" objects to update the playlist (it's possible when calling DAO that track object is lazy loaded into playlistTrack).
++ A): you just recompute all the playlist duration using all the tracks the playlist contains.
++ B): you just add/remove the time of the sum of the duration of the elements that were added/removed.
+
+- I chose option B) because this way we do not have to "fetch" all the "track" objects to update the playlist (it's possible when calling DAO that track object is lazy loaded into playlistTrack).
 
 
 
 4) TESTING:
-create java interface "IPlaylistDaoBean" for DAO so that just by configuring dependency injection we can switch to another DAO.
-PlaylistDaoBean is just an implementation and will not be used by our unit tests : the DAO must be "stubbed" when testing business logics --> let's use mockito.
++ create java interface "IPlaylistDaoBean" for DAO so that just by configuring dependency injection we can switch to another DAO.
++ PlaylistDaoBean is just an implementation and will not be used by our unit tests : the DAO must be "stubbed" when testing business logics --> let's use mockito.
++ I created PlaylistTestUtil.java to be able to create some input Data for the tests.
 
-I created PlaylistTestUtil.java to be able to create some input Data for the tests.
 
-parameterized unit test are usefull to avaid duplicate (copy paste) code
 
-I created A parameterized unit test for "ADD_TRACK_NOMINAL".
-I created a parameterized unit test for "ADD_TRACK_EXCEPTION."
-both test case use the same method (less code to maintain...)
-All Corner cases are tested.
-All "exception" cases are tested.
++ I created A parameterized unit test for "ADD_TRACK_NOMINAL".
++ I created a parameterized unit test for "ADD_TRACK_EXCEPTION."
++ both test case use the same method (less code to maintain...)
++ All Corner cases are tested.
++ All "exception" cases are tested.
 
-same thing for remove functionnality.
++ same things for the "remove" functionnality.
 
 conclusion:
-there is 45 test cases and all of them run successfully.
+there are 45 test cases and all of them runs successfully.
+Please do not hesitate to contact me if you have any questions about my code.
+thank you.
+
 
