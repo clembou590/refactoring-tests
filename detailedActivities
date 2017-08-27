@@ -36,3 +36,21 @@ when adding or removing tracks from a playlist, we must also update the "playlis
  
  I chose option B) because this way we do not have to "fetch" all the "track" objects to update the playlist (it's possible when calling DAO that track object is lazy loaded into playlistTrack).
 
+
+
+4) TESTING:
+create java interface "IPlaylistDaoBean" for DAO so that just by configuring dependency injection we can switch to another DAO.
+PlaylistDaoBean is just an implementation and will not be used by our unit tests : the DAO must be "stubbed" when testing business logics --> let's use mockito.
+
+I created PlaylistTestUtil.java to be able to create some input Data for the tests.
+
+parameterized unit test are usefull to avaid duplicate (copy paste) code
+
+I created A parameterized unit test for "ADD_TRACK_NOMINAL".
+I created a parameterized unit test for "ADD_TRACK_EXCEPTION."
+both test case use the same method (less code to maintain...)
+All Corner cases are tested.
+All "exception" cases are tested.
+
+same thing for remove functionnality.
+

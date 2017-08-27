@@ -1,9 +1,9 @@
 package com.tidal.refactoring.playlist;
 
 import com.google.inject.Inject;
-import com.tidal.refactoring.playlist.dao.PlaylistDaoBean;
 import com.tidal.refactoring.playlist.data.PlayListTrack;
 import com.tidal.refactoring.playlist.data.Track;
+import com.tidal.refactoring.playlist.dao.IPlaylistDaoBean;
 import com.tidal.refactoring.playlist.data.PlayList;
 import com.tidal.refactoring.playlist.exception.PlaylistException;
 import com.tidal.refactoring.playlist.exception.PlaylistExceptionReasons;
@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 
 public class PlaylistBusinessBean {
 
-  private static final int MaxNumberOfTrackInPlaylist = 500;
+  static final int MaxNumberOfTrackInPlaylist = 500;
 
-  private PlaylistDaoBean playlistDaoBean;
+  private IPlaylistDaoBean playlistDaoBean;
 
   @Inject
-  public PlaylistBusinessBean(PlaylistDaoBean playlistDaoBean) {
+  public PlaylistBusinessBean(IPlaylistDaoBean playlistDaoBean) {
     this.playlistDaoBean = playlistDaoBean;
   }
 
@@ -29,12 +29,12 @@ public class PlaylistBusinessBean {
    * if the given index is bigger than the current size of the playlist then the tracks will be added at the end of the playlist.
    * the given index must be superior or equal to zero.
    * 
-   * note that this function will ONLY throw a PlaylistException. (any other kind of exception would get caught and throw a PlaylistException instead)
+   * note that this function will ONLY throws a PlaylistException. (any other kind of exception would get caught and throw a PlaylistException instead)
    * 
    * @param playlistUUID of the playlist in which we want to add tracks
    * @param tracksToAdd the tracks to add to the playlist.
    * @param toIndex the index on which we want to add tracksToAdd
-   * @return the playListTrack added that have been added to the playlist.
+   * @return the playListTrack added that have been added to the playlist. IN THE SAME ORDER THAN THE tracksToAdd parameter
    * @throws PlaylistException  if
    * - the playlist size exeeds 500. (500 is OK but 501 then exception)
    * - the playlist with the given uuid could not be found in dao.
@@ -44,6 +44,23 @@ public class PlaylistBusinessBean {
    */
   public List<PlayListTrack> addTracks(String playlistUUID, List<Track> tracksToAdd, int toIndex) throws PlaylistException {
     return wrapPlayListException((Void t) -> addTrackToPlayList(playlistDaoBean.getPlaylistByUUID(playlistUUID), tracksToAdd, toIndex));
+  }
+
+  /**
+   * Remove the tracks from the playlist located at the sent indexes
+   *  
+   * 
+   * @param playlistUUID the uuid of the playlist in which we want to remove tracks
+   * @param indexes the indexes of the tracks that needs to be removed. if indexes contains two times the same index then the second occurence will be ignored: [5,6,6,7,3] will have same result as [5,6,7,3]
+   * @return the  PlaylistTracks that have been removed (either all the requested indexes are removed or an exception will be thrown)
+   * @throws PlaylistException
+   * -playlist is not found in dao
+   * -indexes is null or empty
+   * -if one index is negative
+   * -if one index is bigger than (playlistSize -1) . (for exemple: [track0,track1] trying to remove [2] will throw exception: so trying to remove an index from an empty list will throw an exception)
+   */
+  public List<PlayListTrack> removeTracks(String playlistUUID, List<Integer> indexes) throws PlaylistException {
+    return wrapPlayListException((Void t) -> removeTrackToPlayList(playlistDaoBean.getPlaylistByUUID(playlistUUID), indexes));
   }
 
   private static List<PlayListTrack> addTrackToPlayList(PlayList playlist, List<Track> tracksToAdd, int toIndex) {
@@ -101,23 +118,6 @@ public class PlaylistBusinessBean {
     return playlistTrack;
   }
 
-  /**
-   * Remove the tracks from the playlist located at the sent indexes
-   *  
-   * 
-   * @param playlistUUID the uuid of the playlist in which we want to remove tracks
-   * @param indexes the indexes of the tracks that needs to be removed. if indexes contains two times the same index then the second occurence will be ignored: [5,6,6,7,3] will have same result as [5,6,7,3]
-   * @return the  PlaylistTracks that have been removed (either all the requested indexes are removed or an exception will be thrown)
-   * @throws PlaylistException
-   * -playlist is not found in dao
-   * -indexes is null or empty
-   * -if one index is negative
-   * -if one index is bigger than (playlistSize -1) . (for exemple: [track0,track1] trying to remove [2] will throw exception: so trying to remove an index from an empty list will throw an exception)
-   */
-  public List<PlayListTrack> removeTracks(String playlistUUID, List<Integer> indexes) throws PlaylistException {
-    return wrapPlayListException((Void t) -> removeTrackToPlayList(playlistDaoBean.getPlaylistByUUID(playlistUUID), indexes));
-  }
-
   private static List<PlayListTrack> removeTrackToPlayList(PlayList playlist, List<Integer> indexes) {
     //HANDLE NON NOMINAL CASES.
     if (playlist == null) {
@@ -142,15 +142,10 @@ public class PlaylistBusinessBean {
         //NOMINAL CASE
         ArrayList<PlayListTrack> removedTracks = new ArrayList<>();
 
-        //TODO HERE CAN AND SHOULD MODIFY THE FUNCTION TO REMOVE THE ELSE IF BLOCK AND AUTO add the removed track to the list 
+         
         for (Integer indexToRemove : sortedIndexesWithNoDublicates) {
-          PlayListTrack removed = playListTracks.remove(indexToRemove.intValue() - removedTracks.size());
-          if (removed == null) {//THIS SHOULD NEVER HAPPEND
-            throw new PlaylistException(PlaylistExceptionReasons.UNKNOWN);
-          }
-          else {
-            removedTracks.add(removed);
-          }
+          removedTracks.add(playListTracks.remove(indexToRemove.intValue() - removedTracks.size()));
+   
         }
 
         float durationToremove = computeTotalDuration(removedTracks.stream().map(pt -> pt.getTrack()).collect(Collectors.toList()));
