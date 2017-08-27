@@ -1,24 +1,68 @@
-# Tidal recruiting refactoring test
-
-##Intro
-The code in this project is a isolated and very simplified version of our add-track-to-playlist business code.
+# My solution to this test
 
 ###Setup notes
-- We have used Guice for dependency injection (in the real service we currently use EJB injection), for the setup to be simpler.
-- We have added a fake PlaylistDaoBean that only returns a hardcoded playlist for simplicity.
+this is a standard maven project so to execute it:
+ - git clone https://github.com/clembou590/refactoring-tests
+ - mvn clean package
 
-###Checking out the code
-When you are about to check out the project we need you to fork it to your own Github or Bitbucket account so that your commits wont be exposed to other potential candidates we want to perform the test on. 
+### My detailed solution step by step
 
-##Assignments
-1. Add necessary unit tests to the existing code to both see that the code works as expected, and to avoid breaking the code when refactoring
-2. Refactor the existing code until you are satisfied with it
-3. Add a delete track method with appropriate unit tests
+1) remove all getters and setters and use lombok!
+if you do not know this library: it enables you to create the getter and the setter with just one annotation in the java file.
+--> it makes the file much more "readable" 
+(for exemple in original class "PlayList.java" someone could be tempted to modify the setPlayListTracks method to also change the "number of tracks" and that code would be all "hidden" in among all other getters and setters).
 
-##Feel you are done or have questions?
-When you have managed to make yourself believe that you are done, please send us a link to your repository so that we may download and evaluate the code. If you have any questions about the test or you want to send your repository link to us, please send it to eivind.hognestad@tidal.com and ruben.chadien@tidal.com with thor.inge.schon@tidal.com on cc.
 
-###One last thing..
-Just as important as the refactoring and testing itself - please come with comments on the test project, the setup of it or other things you think can improve or change. Also documentation on what you have done, and why is going to make the evaluation easier for us, and _may_ count as a plus. It's up to you if you decide to document in a separate file, or in the code itself. 
 
-Enjoy!
+2) refactoring the data classes:
+--> I am going to write most of the relevant questions I asked myself to justify the changes that I would do if I were part of the team:
+
+	A) in Playlist.java we have "id" and "uuid"... that's not necessary either use id and let the database layer autogenerate the id or use uuid and then generate it.
+	--> remove id attribute
+
+	B) why Playlist.java contains a set of "PlaylistTrack" and not a set of "Track"? (ie why not delete the class PlaylistTrack.java?)
+	--> the only reason I see to keep the class "PlaylistTrack" and not completely delete it, is the "PlaylistTrack.dateAdded" field:
+		when a user add a track to his playlist, if it is a requirement that we must save the information that he added this track at this time, then we cannot save it in "Track" (and obviously not in Playlist).
+		So we need an additionnal class: PlaylistTrack.
+		
+	C) "PlaylistTrack.index" / Playlist contains a SET of PlaylistTrack and not a LIST ?
+	--> a requirement for playlist fonctionnality: "it should be possible to create a playlist that contains several times the same track." (that is one of the question I asked you by email)
+		index seems to be used to be able to sort the list of tracks: using an LIST instead of a SET enables the business logic to not have to deal with this problematic.
+	    So I get rid of "PlaylistTrack.index" and I remove "implement Comparable" from PlayListTrack.
+	    I also remove the attribute PlayList.nrOfTracks but I create a getNrOfTracks that returns the size of the list.
+	    
+	D) ¨PlayListTrack" contains attribute: Track / TrackId / Playlist But not PlaylistId?
+	--> add playListUUID as an attribute in PlayListTrack.java (we need this information because two playlistTrack are not equals if they do not belong to the same Playlist).
+	note: we could have used playlist.getUUID() (and also track.getId()) but in this case it would mean that the data "playlist and track objects" would have to be fetched from DB.
+	
+	 
+3) PlaylistBusinessBean:
+because of previous steps, the Business class becomes very small. (small means easier to maintain, easier to understand too...).
+only two public methods (one for add, one for remove tracks). All other methods are private AND static because they do not use class members.
+when adding or removing tracks from a playlist, we must also update the "playlist duration" and I see to ways to do it:
+ option A): you just recompute all the playlist duration using all the tracks the playlist contains.
+ option B): you just add/remove the time of the sum of the duration of the elements that were added/removed.
+ 
+ I chose option B) because this way we do not have to "fetch" all the "track" objects to update the playlist (it's possible when calling DAO that track object is lazy loaded into playlistTrack).
+
+
+
+4) TESTING:
+create java interface "IPlaylistDaoBean" for DAO so that just by configuring dependency injection we can switch to another DAO.
+PlaylistDaoBean is just an implementation and will not be used by our unit tests : the DAO must be "stubbed" when testing business logics --> let's use mockito.
+
+I created PlaylistTestUtil.java to be able to create some input Data for the tests.
+
+parameterized unit test are usefull to avaid duplicate (copy paste) code
+
+I created A parameterized unit test for "ADD_TRACK_NOMINAL".
+I created a parameterized unit test for "ADD_TRACK_EXCEPTION."
+both test case use the same method (less code to maintain...)
+All Corner cases are tested.
+All "exception" cases are tested.
+
+same thing for remove functionnality.
+
+conclusion:
+there is 45 test cases and all of them run successfully.
+
