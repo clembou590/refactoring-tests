@@ -1,7 +1,7 @@
 1) remove all getters and setters and use lombok!
 if you do not know this library: it enables you to create the getter and the setter with just one annotation in the java file.
 --> it makes the file much more "readable" 
-(for exemple in original class "PlayList.java" someone could be tempted to modify the setPlayListTracks to also change the "number of tracks" and that code would be all "hidden" in among all other getters and setters).
+(for exemple in original class "PlayList.java" someone could be tempted to modify the setPlayListTracks method to also change the "number of tracks" and that code would be all "hidden" in among all other getters and setters).
 
 
 
@@ -11,8 +11,8 @@ if you do not know this library: it enables you to create the getter and the set
 	A) in Playlist.java we have "id" and "uuid"... that's not necessary either use id and let the database layer autogenerate the id or use uuid and then generate it.
 	--> remove id attribute
 
-	B) why Playlist.java contains a set of "PlaylistTrack" and not a set of "Track"?
-	--> the only reason I see to keep the class "PlaylistTrack" and not completely delete it is the "PlaylistTrack.dateAdded" field:
+	B) why Playlist.java contains a set of "PlaylistTrack" and not a set of "Track"? (ie why not delete the class PlaylistTrack.java?)
+	--> the only reason I see to keep the class "PlaylistTrack" and not completely delete it, is the "PlaylistTrack.dateAdded" field:
 		when a user add a track to his playlist, if it is a requirement that we must save the information that he added this track at this time, then we cannot save it in "Track" (and obviously not in Playlist).
 		So we need an additionnal class: PlaylistTrack.
 		
@@ -27,4 +27,12 @@ if you do not know this library: it enables you to create the getter and the set
 	note: we could have used playlist.getUUID() (and also track.getId()) but in this case it would mean that the data: playlist and track objects would have to be fetched from DB.
 	
 	 
-	
+3) PlaylistBusinessBean:
+because of previous steps, the Business class becomes very small. (small means easier to maintain, easier to understand too...).
+only two public methods (one for add, one for remove tracks). All other methods are private AND static because they do not use class members.
+when adding or removing tracks from a playlist, we must also update the "playlist duration" and I see to ways to do it:
+ option A): you just recompute all the playlist duration using all the tracks the playlist contains.
+ option B): you just add/remove the time of the sum of the duration of the elements that were added/removed.
+ 
+ I chose option B) because this way we do not have to "fetch" all the "track" objects to update the playlist (it's possible when calling DAO that track object is lazy loaded into playlistTrack).
+

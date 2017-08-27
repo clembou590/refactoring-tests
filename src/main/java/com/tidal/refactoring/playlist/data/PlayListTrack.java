@@ -21,7 +21,7 @@ public @Data class PlayListTrack implements Serializable {
     private Track track;
 
     public PlayListTrack() {
-        dateAdded = new Date();
+      super();
     }
 
 
@@ -36,7 +36,7 @@ public @Data class PlayListTrack implements Serializable {
 
         PlayListTrack that = (PlayListTrack) o; 
   			
-  			if(playlistUUID !=null ? !playlistUUID.equals(that.playlistUUID): that.playlistUUID!=null) return false;
+        if(playlistUUID !=null ? !playlistUUID.equals(that.playlistUUID): that.playlistUUID!=null) return false;
         if (trackId != that.trackId) return false;
         if (dateAdded != null ? !dateAdded.equals(that.dateAdded) : that.dateAdded != null) return false;
         return !(id != null ? !id.equals(that.id) : that.id != null);
