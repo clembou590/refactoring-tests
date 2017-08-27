@@ -39,7 +39,7 @@ if you do not know this library: it enables you to create the getter and the set
 3) PlaylistBusinessBean:
 because of previous steps, the Business class becomes very small. (small means easier to maintain, easier to understand too...).
 only two public methods (one for add, one for remove tracks). All other methods are private AND static because they do not use class members.
-when adding or removing tracks from a playlist, we must also update the "playlist duration" and I see to ways to do it:
+when adding or removing tracks from a playlist, we must also update the "playlist duration" and I see 2 ways to do it:
 + A): you just recompute all the playlist duration using all the tracks the playlist contains.
 + B): you just add/remove the time of the sum of the duration of the elements that were added/removed.
 
